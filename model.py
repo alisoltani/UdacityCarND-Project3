@@ -62,16 +62,28 @@ car_camera_images = []
 steering_angles = []
 
 car_camera_images, steering_angles = process_files(IsWindows=False, originalpath='data/', flip=False)
-car_camera_images_windows, steering_angles_windows = process_files(IsWindows=True, originalpath='MyOwnData/', flip=True)
 
+car_camera_images_windows, steering_angles_windows = process_files(IsWindows=True, originalpath='MyOwnData/', flip=True)
 car_camera_images = car_camera_images + car_camera_images_windows
 steering_angles = steering_angles + steering_angles_windows
+
+#car_camera_images_new, steering_angles_new = process_files(IsWindows=False, originalpath='data/', flip=True)
+#car_camera_images = car_camera_images + car_camera_images_new
+#steering_angles = steering_angles + steering_angles_new
 
 car_camera_images_windows, steering_angles_windows = process_files(IsWindows=True, originalpath='MyOwnData2/', flip=False)
 car_camera_images = car_camera_images + car_camera_images_windows
 steering_angles = steering_angles + steering_angles_windows
 
+#car_camera_images_windows, steering_angles_windows = process_files(IsWindows=True, originalpath='MyOwnData2/', flip=True)
+#car_camera_images = car_camera_images + car_camera_images_windows
+#steering_angles = steering_angles + steering_angles_windows
+
 car_camera_images_windows, steering_angles_windows = process_files(IsWindows=True, originalpath='MyOwnData3/', flip=False)
+car_camera_images = car_camera_images + car_camera_images_windows
+steering_angles = steering_angles + steering_angles_windows
+
+car_camera_images_windows, steering_angles_windows = process_files(IsWindows=True, originalpath='MyOwnData3/', flip=True)
 car_camera_images = car_camera_images + car_camera_images_windows
 steering_angles = steering_angles + steering_angles_windows
 
@@ -95,7 +107,7 @@ from keras.layers.pooling import MaxPooling2D, AveragePooling2D
 ## Inspired from the NVIDIA model
 model = Sequential()
 model.add(Lambda(lambda x: (x/127.5) - 1, input_shape = (160,320,3)))
-model.add(Cropping2D(cropping=((55,5),(0,0))))
+model.add(Cropping2D(cropping=((60,5),(0,0))))
 model.add(Conv2D(24, 5, 5, activation='relu', border_mode='same'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
@@ -115,8 +127,8 @@ model.add(Dropout(0.25))
 model.add(Flatten())
 model.add(Dense(1014, activation='elu'))
 model.add(Dropout(0.5))
-model.add(Dense(100, activation='relu'))
-model.add(Dropout(0.5))
+#model.add(Dense(100, activation='relu'))
+#model.add(Dropout(0.5))
 model.add(Dense(10, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(1))
