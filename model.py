@@ -71,7 +71,7 @@ car_camera_images_windows, steering_angles_windows = process_files(IsWindows=Tru
 car_camera_images = car_camera_images + car_camera_images_windows
 steering_angles = steering_angles + steering_angles_windows
 
-car_camera_images_windows, steering_angles_windows = process_files(IsWindows=True, originalpath='MyOwnData3', flip=False)
+car_camera_images_windows, steering_angles_windows = process_files(IsWindows=True, originalpath='MyOwnData3/', flip=False)
 car_camera_images = car_camera_images + car_camera_images_windows
 steering_angles = steering_angles + steering_angles_windows
 
