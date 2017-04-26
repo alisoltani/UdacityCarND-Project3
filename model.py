@@ -49,6 +49,11 @@ def process_files(IsWindows=False, originalpath='data/', flip=False):
 		steering_left = steering_angle + steering_correction
 		steering_right = steering_angle - steering_correction
 		
+		if flip:
+			steering_angle = -steering_angle
+			steering_left = -steering_left
+			steering_right = -steering_right
+		
 		car_camera_images.extend([image_center, image_left, image_right])
 		steering_angles.extend([steering_angle, steering_left, steering_right])
 		
@@ -63,7 +68,10 @@ car_camera_images = car_camera_images + car_camera_images_windows
 steering_angles = steering_angles + steering_angles_windows
 
 car_camera_images_windows, steering_angles_windows = process_files(IsWindows=True, originalpath='MyOwnData2/', flip=False)
+car_camera_images = car_camera_images + car_camera_images_windows
+steering_angles = steering_angles + steering_angles_windows
 
+car_camera_images_windows, steering_angles_windows = process_files(IsWindows=True, originalpath='MyOwnData3', flip=False)
 car_camera_images = car_camera_images + car_camera_images_windows
 steering_angles = steering_angles + steering_angles_windows
 
