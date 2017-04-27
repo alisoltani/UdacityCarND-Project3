@@ -8,6 +8,11 @@ import cv2
 import ntpath
 import numpy as np
 
+def process_image(img):
+	yuvImg = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
+	croppedImg = yuvImg[60:150, 0:360]
+	return cv2.resize(croppedImg, (64,64))
+
 def process_files(IsWindows=False, originalpath='data/', flip=False):
 	lines = []
 	with open(originalpath + 'driving_log.csv') as csvfile:
@@ -19,7 +24,7 @@ def process_files(IsWindows=False, originalpath='data/', flip=False):
 	car_camera_images = []
 	steering_angles = []
 
-	steering_correction = 0.15
+	steering_correction = 0.25
 
 	for line in lines:
 		source_path = line[0]
@@ -53,6 +58,10 @@ def process_files(IsWindows=False, originalpath='data/', flip=False):
 			steering_angle = -steering_angle
 			steering_left = -steering_left
 			steering_right = -steering_right
+
+		image_center = process_image(image_center)
+		image_left = process_image(image_left)
+		image_right = process_image(image_right)
 		
 		car_camera_images.extend([image_center, image_left, image_right])
 		steering_angles.extend([steering_angle, steering_left, steering_right])
@@ -63,7 +72,7 @@ steering_angles = []
 
 car_camera_images, steering_angles = process_files(IsWindows=False, originalpath='data/', flip=False)
 
-car_camera_images_windows, steering_angles_windows = process_files(IsWindows=True, originalpath='MyOwnData/', flip=True)
+car_camera_images_windows, steering_angles_windows = process_files(IsWindows=True, originalpath='MyOwnData3/', flip=False)
 car_camera_images = car_camera_images + car_camera_images_windows
 steering_angles = steering_angles + steering_angles_windows
 
@@ -71,19 +80,15 @@ steering_angles = steering_angles + steering_angles_windows
 #car_camera_images = car_camera_images + car_camera_images_new
 #steering_angles = steering_angles + steering_angles_new
 
-car_camera_images_windows, steering_angles_windows = process_files(IsWindows=True, originalpath='MyOwnData2/', flip=False)
+car_camera_images_windows, steering_angles_windows = process_files(IsWindows=True, originalpath='MyOwnData4/', flip=False)
 car_camera_images = car_camera_images + car_camera_images_windows
 steering_angles = steering_angles + steering_angles_windows
 
-#car_camera_images_windows, steering_angles_windows = process_files(IsWindows=True, originalpath='MyOwnData2/', flip=True)
-#car_camera_images = car_camera_images + car_camera_images_windows
-#steering_angles = steering_angles + steering_angles_windows
-
-car_camera_images_windows, steering_angles_windows = process_files(IsWindows=True, originalpath='MyOwnData3/', flip=False)
+car_camera_images_windows, steering_angles_windows = process_files(IsWindows=True, originalpath='MyOwnData2/', flip=True)
 car_camera_images = car_camera_images + car_camera_images_windows
 steering_angles = steering_angles + steering_angles_windows
 
-car_camera_images_windows, steering_angles_windows = process_files(IsWindows=True, originalpath='MyOwnData3/', flip=True)
+car_camera_images_windows, steering_angles_windows = process_files(IsWindows=True, originalpath='MyOwnData4/', flip=True)
 car_camera_images = car_camera_images + car_camera_images_windows
 steering_angles = steering_angles + steering_angles_windows
 
@@ -106,35 +111,35 @@ from keras.layers.pooling import MaxPooling2D, AveragePooling2D
 
 ## Inspired from the NVIDIA model
 model = Sequential()
-model.add(Lambda(lambda x: (x/127.5) - 1, input_shape = (160,320,3)))
-model.add(Cropping2D(cropping=((60,5),(0,0))))
-model.add(Conv2D(24, 5, 5, activation='relu', border_mode='same'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.25))
+model.add(Lambda(lambda x: (x/127.5) - 1, input_shape = (64,64,3)))
+#model.add(Cropping2D(cropping=((60,10),(0,0))))
+model.add(Conv2D(24, 5, 5, activation='elu', border_mode='valid'))
+model.add(AveragePooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.5))
 
-model.add(Conv2D(36, 5, 5, activation='relu', border_mode='same'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.25))
+model.add(Conv2D(36, 5, 5, activation='elu', border_mode='valid'))
+model.add(AveragePooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.5))
 
-model.add(Conv2D(48, 3, 3, activation='relu', border_mode='same'))
-model.add(MaxPooling2D(pool_size=(2,2)))
-model.add(Dropout(0.25))
+model.add(Conv2D(48, 3, 3, activation='elu', border_mode='valid'))
+model.add(AveragePooling2D(pool_size=(2,2)))
+model.add(Dropout(0.5))
 
-model.add(Conv2D(64, 3, 3, activation='relu', border_mode='same'))
-model.add(MaxPooling2D(pool_size=(2,2)))
-model.add(Dropout(0.25))
+model.add(Conv2D(64, 3, 3, activation='elu', border_mode='valid'))
+model.add(AveragePooling2D(pool_size=(2,2)))
+model.add(Dropout(0.5))
 
 model.add(Flatten())
-model.add(Dense(1014, activation='elu'))
+model.add(Dense(100, activation='elu'))
 model.add(Dropout(0.5))
-#model.add(Dense(100, activation='relu'))
-#model.add(Dropout(0.5))
-model.add(Dense(10, activation='relu'))
+model.add(Dense(50, activation='elu'))
+model.add(Dropout(0.5))
+model.add(Dense(10, activation='elu'))
 model.add(Dropout(0.5))
 model.add(Dense(1))
 
-model.compile(loss='mse', optimizer='adam')
-model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=4)
+model.compile(loss='mse', optimizer='nadam')
+model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=10)
 
 model.save('model.h5')
 
