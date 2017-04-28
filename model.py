@@ -7,6 +7,7 @@ import csv
 import cv2
 import ntpath
 import numpy as np
+from  keras.utils.visualize_util import plot
 
 def process_image(img):
 	yuvImg = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
@@ -76,10 +77,6 @@ car_camera_images_windows, steering_angles_windows = process_files(IsWindows=Tru
 car_camera_images = car_camera_images + car_camera_images_windows
 steering_angles = steering_angles + steering_angles_windows
 
-#car_camera_images_new, steering_angles_new = process_files(IsWindows=False, originalpath='data/', flip=True)
-#car_camera_images = car_camera_images + car_camera_images_new
-#steering_angles = steering_angles + steering_angles_new
-
 car_camera_images_windows, steering_angles_windows = process_files(IsWindows=True, originalpath='MyOwnData4/', flip=False)
 car_camera_images = car_camera_images + car_camera_images_windows
 steering_angles = steering_angles + steering_angles_windows
@@ -94,14 +91,6 @@ steering_angles = steering_angles + steering_angles_windows
 
 X_train = np.array(car_camera_images)
 y_train = np.array(steering_angles)
-#X_train_to_flip = np.array(car_camera_images_windows)
-#y_train_to_flip = np.array(steering_angles_windows)
-
-#X_train_flipped = np.fliplr(X_train_to_flip)
-#y_train_flipped = -y_train_to_flip
-
-#X_train = np.concatenate((X_train, X_train_flipped), axis=0)
-#y_train = np.concatenate((y_train, y_train_flipped), axis=0)
 
 print('The shape of the image data is', X_train.shape)
 
@@ -139,7 +128,7 @@ model.add(Dropout(0.5))
 model.add(Dense(1))
 
 model.compile(loss='mse', optimizer='nadam')
-model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=10)
+model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=7)
 
 model.save('model.h5')
-
+plot(model, to_file='model.png')
