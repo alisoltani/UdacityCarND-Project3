@@ -1,8 +1,3 @@
-
-# coding: utf-8
-
-# In[ ]:
-
 import csv
 import cv2
 import ntpath
