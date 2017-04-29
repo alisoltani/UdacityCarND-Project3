@@ -2,7 +2,7 @@ import csv
 import cv2
 import ntpath
 import numpy as np
-from  keras.utils.visualize_util import plot
+from  keras.utils.visualize_util import plot 
 
 def process_image(img):
 	yuvImg = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
