@@ -85,10 +85,6 @@ car_camera_images_windows, steering_angles_windows = process_files(IsWindows=Tru
 car_camera_images = car_camera_images + car_camera_images_windows
 steering_angles = steering_angles + steering_angles_windows
 
-car_camera_images_windows, steering_angles_windows = process_files(IsWindows=True, originalpath='MyOwnData4/', flip=True)
-car_camera_images = car_camera_images + car_camera_images_windows
-steering_angles = steering_angles + steering_angles_windows
-
 X_train = np.array(car_camera_images)
 y_train = np.array(steering_angles)
 
@@ -119,8 +115,8 @@ model.add(AveragePooling2D(pool_size=(2,2)))
 model.add(Dropout(0.5))
 
 model.add(Flatten())
-model.add(Dense(100, activation='elu'))
-model.add(Dropout(0.5))
+#model.add(Dense(100, activation='elu'))
+#model.add(Dropout(0.5))
 model.add(Dense(50, activation='elu'))
 model.add(Dropout(0.5))
 model.add(Dense(10, activation='elu'))
@@ -128,7 +124,7 @@ model.add(Dropout(0.5))
 model.add(Dense(1))
 
 model.compile(loss='mse', optimizer='nadam')
-model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=7)
+model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=5)
 
 model.save('model.h5')
-plot(model, to_file='model.png')
+plot(model, to_file='model.png', show_shapes=True, show_layer_names=True)
