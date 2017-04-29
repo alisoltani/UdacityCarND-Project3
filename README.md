@@ -16,7 +16,7 @@ The goals / steps of this project are the following:
 [image4]: ./images/center2.jpg "Center Driving Image"
 [image5]: ./images/recovery1.jpg "Recovery Image"
 [image6]: ./images/recovery2.jpg "Recovery Image"
-[image7]: ./images/recovery2.jpg "Recovery Image"
+[image7]: ./images/recovery3.jpg "Recovery Image"
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
