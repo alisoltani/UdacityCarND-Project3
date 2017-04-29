@@ -120,3 +120,13 @@ I used an nadam optimizer so that manually training the learning rate wasn't nec
 
 
 The original datasets are not included in this repo due to size limitations.
+
+
+## Final Observations
+
+I have also included a run4 video file, along with a run4ThirdPerson video that corresponds with that run. It can be seen in this run that the car is swiveling too much, and the people in the car will probably get car sick, but the car does not exit the track. I think this is partly due to the extra data that I have provided that focuses only on curves, and recovering from the sides of the road.
+
+Of special interest was the bridge (different texture road), the curve after the bridge (which has dirt instead of pavement, and before resizing and preprocessing where all my car models would exit the road and take the detour). 
+
+Finally, the model can be improved with more work on the preprocessing and normalizing, and also increasing the convolutional coding to a depth o 128 instead of 64, but due to time restrictions I will leave that as future work.
+
